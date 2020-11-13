@@ -6,7 +6,11 @@ const scoreBoard_div = document.querySelector(".score_board");
 const result_p = document.querySelector(".result > p");
 const choices_div = document.querySelector(".choices");
 const gameResultEnum =  Object.freeze({"win": 1, "lose": 2, "draw": 3});
-const historyLog = [];
+const resultLogs_div = document.querySelector(".result-logs");
+let historyLog = [];
+let roundNumber = 0;
+let roundResult = 1;
+let computerChoice = 0;
 const sign = [
     {
         name: "Rock",
@@ -121,13 +125,71 @@ function getComputerChoice() {
     return randomNumber;
 }
 
-function game(userChoice) {
-    const computerChoice = getComputerChoice();
-    console.log(computerChoice);
-    const roundResult = getRoundResult(userChoice, computerChoice);
-    increaseScore(roundResult);
-    showRoundResult(roundResult, userChoice, computerChoice);
+function saveHistory(userChoice, computerChoice) {
+    historyLog[roundNumber] = {
+        userSign: userChoice,
+        compSign: computerChoice
+    };
+}
 
+function getSourceSignByHistoryItem(historyLogItem, player) {
+    let itemSign = (player == 1) ? historyLogItem.userSign : historyLogItem.compSign;
+    return sign[itemSign].source;
+}
+
+// function getSignIndex(historyLogItem, player) {
+//     let itemSign = (player == 1) ? historyLogItem.userSign : historyLogItem.compSign;
+//     return sign[itemSign].;
+// }
+
+function showHistoryItem() {
+    let round_div = document.createElement("div");
+    round_div.className = "result-logs-item";
+    resultLogs_div.appendChild(round_div);
+
+    let home_text = document.createElement("div");
+    round_div.appendChild(home_text);
+    home_text.innerHTML = `Раунд ${roundNumber}:`;
+    home_text.className = "result-logs-item--element";
+    
+    let imgUser = document.createElement("img");
+    round_div.appendChild(imgUser);
+    imgUser.src = getSourceSignByHistoryItem(historyLog[roundNumber-1], 1);
+    imgUser.className = "result-logs-item--element";
+
+    let middle_text = document.createElement("div");
+    round_div.appendChild(middle_text);
+    middle_text.className = "result-logs-item--element";
+    let resultIndex= getRoundResult(historyLog[roundNumber-1].userSign, historyLog[roundNumber-1].compSign);
+    switch (resultIndex) {
+        case gameResultEnum.win: 
+            middle_text.innerHTML = "beats";
+            break;
+        case gameResultEnum.lose: 
+            middle_text.innerHTML = "lose to";
+            break;
+        case gameResultEnum.draw: 
+            middle_text.innerHTML = "equals";
+            break;
+    }
+
+    let imgComp = document.createElement("img");
+    round_div.appendChild(imgComp);
+    imgComp.src = getSourceSignByHistoryItem(historyLog[roundNumber-1], 2);
+}
+
+function playRound(userChoice) {
+    computerChoice = getComputerChoice();
+    roundResult = getRoundResult(userChoice, computerChoice);
+    increaseScore(roundResult);
+    saveHistory(userChoice, computerChoice);
+    roundNumber++;
+}
+
+function game(userChoice) {
+    playRound(userChoice);
+    showRoundResult(roundResult, userChoice, computerChoice);
+    showHistoryItem();
 }
 
 function main() {

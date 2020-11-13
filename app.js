@@ -4,55 +4,66 @@ const userScore_span = document.getElementById("user-score");
 const computerScore_span = document.getElementById("computer-score");
 const scoreBoard_div = document.querySelector(".score_board");
 const result_p = document.querySelector(".result > p");
-const rock_div = document.getElementById("Rock");
-const paper_div = document.getElementById("Paper");
-const scissors_div = document.getElementById("Scissors");
-const lizard_div = document.getElementById("Lizard");
-const spock_div = document.getElementById("Spock");
+const choices_div = document.querySelector(".choices");
 const gameResultEnum =  Object.freeze({"win": 1, "lose": 2, "draw": 3});
-const gameRules = {
-    Rock: {
-        Rock: gameResultEnum.draw,
-        Scissors: gameResultEnum.win,
-        Paper: gameResultEnum.lose,
-        Lizard: gameResultEnum.win,
-        Spock: gameResultEnum.lose
+const historyLog = [];
+const sign = [
+    {
+        name: "Rock",
+        rules: {
+            0: gameResultEnum.draw,
+            1: gameResultEnum.win,
+            2: gameResultEnum.lose,
+            3: gameResultEnum.win,
+            4: gameResultEnum.lose
+        },
+        source: "images/rock.png"
     },
-    Scissors: {
-        Rock: gameResultEnum.lose,
-        Scissors: gameResultEnum.draw,
-        Paper: gameResultEnum.win,
-        Lizard: gameResultEnum.win,
-        Spock: gameResultEnum.lose
+    {
+        name: "Scissors",
+        rules: {
+            0: gameResultEnum.lose,
+            1: gameResultEnum.draw,
+            2: gameResultEnum.win,
+            3: gameResultEnum.win,
+            4: gameResultEnum.lose
+        },
+        source: "images/scissors.png"
     },
-    Paper: {
-        Rock: gameResultEnum.win,
-        Scissors: gameResultEnum.lose,
-        Paper: gameResultEnum.draw,
-        Lizard: gameResultEnum.lose,
-        Spock: gameResultEnum.win
+    {
+        name: "Paper",
+        rules: {
+            0: gameResultEnum.win,
+            1: gameResultEnum.lose,
+            2: gameResultEnum.draw,
+            3: gameResultEnum.lose,
+            4: gameResultEnum.win
+        },
+        source: "images/paper.png"
     },
-    Lizard: {
-        Rock: gameResultEnum.lose,
-        Scissors: gameResultEnum.lose,
-        Paper: gameResultEnum.win,
-        Lizard: gameResultEnum.draw,
-        Spock: gameResultEnum.win
+    {
+        name: "Lizard",
+        rules: {
+            0: gameResultEnum.lose,
+            1: gameResultEnum.lose,
+            2: gameResultEnum.win,
+            3: gameResultEnum.draw,
+            4: gameResultEnum.win
+        },
+        source: "images/lizard.png"
     },
-    Spock: {
-        Rock: gameResultEnum.win,
-        Scissors: gameResultEnum.win,
-        Paper: gameResultEnum.lose,
-        Lizard: gameResultEnum.lose,
-        Spock: gameResultEnum.draw
+    {
+        name: "Spock",
+        rules: {
+            0: gameResultEnum.win,
+            1: gameResultEnum.win,
+            2: gameResultEnum.lose,
+            3: gameResultEnum.lose,
+            4: gameResultEnum.draw
+        },
+        source: "images/spock.png"
     }
-}
-
-function getComputerChoice() {
-    const choices = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'];
-    const randomNumber = Math.floor(Math.random()*5);
-    return choices[randomNumber];
-}
+];
 
 function showScore() {
     userScore_span.innerHTML = userScore;
@@ -62,7 +73,7 @@ function showScore() {
 function showRoundResult(roundResult, userChoice, computerChoice) {
     const smallUserWord = "user".fontsize(3).sub();
     const smallCompWord = "comp".fontsize(3).sub();
-    const userChoice_div = document.getElementById(userChoice);
+    const userChoice_div = document.getElementById(sign[userChoice].name);
     let middleWord = '';
     let endWord = '';
     let colorGlow_class = '';
@@ -86,14 +97,14 @@ function showRoundResult(roundResult, userChoice, computerChoice) {
             break;
     }
 
-    result_p.innerHTML = `${userChoice}${smallUserWord} ${middleWord} ${computerChoice}${smallCompWord}. ${endWord}`;
+    result_p.innerHTML = `${sign[userChoice].name}${smallUserWord} ${middleWord} ${sign[computerChoice].name}${smallCompWord}. ${endWord}`;
     userChoice_div.classList.add(colorGlow_class);
     setTimeout(() => userChoice_div.classList.remove(colorGlow_class), glowTime);
     showScore();
 }
 
 function getRoundResult(userChoice, computerChoice) {
-    return gameRules[userChoice][computerChoice];
+    return sign[userChoice].rules[computerChoice];
 }
 
 function increaseScore(roundResult) {
@@ -105,19 +116,41 @@ function increaseScore(roundResult) {
     }
 }
 
+function getComputerChoice() {
+    const randomNumber = Math.floor(Math.random()*sign.length);
+    return randomNumber;
+}
+
 function game(userChoice) {
     const computerChoice = getComputerChoice();
+    console.log(computerChoice);
     const roundResult = getRoundResult(userChoice, computerChoice);
     increaseScore(roundResult);
     showRoundResult(roundResult, userChoice, computerChoice);
+
 }
 
 function main() {
-    rock_div.addEventListener('click', () => game("Rock"));
-    paper_div.addEventListener('click', () => game("Paper"));
-    scissors_div.addEventListener('click', () => game("Scissors"));
-    lizard_div.addEventListener('click', () => game("Lizard"));
-    spock_div.addEventListener('click', () => game("Spock"));
+    for (let i = 0; i < sign.length; i++) {
+        const sign_div = document.getElementById(sign[i].name);
+        sign_div.addEventListener('click', () => game(i));
+    }
 }
 
-main();
+function createElementsDiv() {
+    for (let i = 0; i < sign.length; i++) {
+        let sign_div = document.createElement("div");
+        sign_div.id = sign[i].name;
+        sign_div.className = "choice";
+
+        let sign_img = document.createElement("img");
+        sign_img.src = sign[i].source;
+        sign_img.alt = sign[i].name;
+
+        sign_div.appendChild(sign_img);
+        choices_div.appendChild(sign_div);
+    };
+    main();
+}
+
+createElementsDiv();

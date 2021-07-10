@@ -5,11 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissors Game</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="./images/favicon.ico" />
 </head>
 <body>
     <header>
-        <h1>Rock Paper Scissors</h1>
+        <h1 id="header-h1">Сыграем?</h1>
     </header>
+
+    <div class="choice-type-game">
+        <p class="choice-text">Выберите тип игры: </p>
+        <div class="choice-type-item">
+            <input type="radio" class="choice-type-input" name="type" value="l" onchange="setTypeOfGame(1)">
+                <span class="choice-type-text">Классический тип</span><br/>
+            <input type="radio" class="choice-type-input" name="type" value="2" onchange="setTypeOfGame(2)">
+                <span class="choice-type-text">Игра с покемонами</span><br/>
+        </div>
+        <!-- <div class="count-items count-items-hover" id="count-items">Выберите количество покемонов:
+            <div class="count-radio">
+                <input type="radio" class="count-item" value="3" onchange="deleteDisabledButton(3)">
+                    <span class="count-item-text">3</span><br/>
+                <input type="radio" class="count-item" value="5" onchange="deleteDisabledButton(5)">
+                    <span class="count-item-text">5</span><br/>
+                <input type="radio" class="count-item" value="7" onchange="deleteDisabledButton(7)">
+                    <span class="count-item-text">7</span><br/>
+            </div>
+        </div> -->
+        <button class="startPlay" id="startPlay">Начать игру</button>
+    </div>
 
     <div class="score-board">
         <div id="user-label" class="badge">user</div>

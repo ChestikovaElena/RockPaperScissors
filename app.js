@@ -7,6 +7,11 @@ const result_p = document.querySelector(".result > p");
 const choices_div = document.querySelector(".choices");
 const gameResultEnum =  Object.freeze({"win": 1, "lose": 2, "draw": 3});
 const resultLogs_div = document.querySelector(".result-logs");
+const buttonStart = document.getElementById('startPlay');
+const popUp = document.querySelector(".choice-type-game");
+const headTop = document.getElementById("header-h1");
+const countOfElements = 5;
+let typeOfGame = 0;
 let historyLog = [];
 let roundNumber = 0;
 let roundResult = 1;
@@ -137,11 +142,6 @@ function getSourceSignByHistoryItem(historyLogItem, player) {
     return sign[itemSign].source;
 }
 
-// function getSignIndex(historyLogItem, player) {
-//     let itemSign = (player == 1) ? historyLogItem.userSign : historyLogItem.compSign;
-//     return sign[itemSign].;
-// }
-
 function showHistoryItem() {
     let round_div = document.createElement("div");
     round_div.className = "result-logs-item";
@@ -199,20 +199,135 @@ function main() {
     }
 }
 
-function createElementsDiv() {
-    for (let i = 0; i < sign.length; i++) {
-        let sign_div = document.createElement("div");
-        sign_div.id = sign[i].name;
-        sign_div.className = "choice";
+function createElementsDiv(typeOfGame) {
+    if (typeOfGame == 1) {
+        for (let i = 0; i < sign.length; i++) {
+            let sign_div = document.createElement("div");
+            sign_div.id = sign[i].name;
+            sign_div.className = "choice";
 
-        let sign_img = document.createElement("img");
-        sign_img.src = sign[i].source;
-        sign_img.alt = sign[i].name;
+            let sign_img = document.createElement("img");
+            sign_img.src = sign[i].source;
+            sign_img.alt = sign[i].name;
 
-        sign_div.appendChild(sign_img);
-        choices_div.appendChild(sign_div);
+            sign_div.appendChild(sign_img);
+            choices_div.appendChild(sign_div);
+        };
+        headTop.innerHTML = "Камень Ножницы Бумага Ящерица Спок";
+        main();
+    }
+    else {
+        let textHead = '';
+        for (let i = 0; i < countOfElements; i++) {
+            let sign_div = document.createElement("div");
+            sign_div.id = pokemons[i].name;
+            sign_div.className = "choice";
+
+            let sign_img = document.createElement("img");
+            sign_img.src = pokemons[i].source;
+            sign_img.alt = pokemons[i].name;
+
+            sign_div.appendChild(sign_img);
+            choices_div.appendChild(sign_div);
+            textHead = `${textHead}${pokemons[i].name}`;
+        }
+        headTop.innerHTML = textHead;
+    }
+}
+
+function createElementDiv(typeOfGame, name, source) {
+    // let textHead = '';
+    let sign = document.createElement("div");
+    sign.id = name;
+    sign.className = "choice__wrapper";
+
+    let sign_div = document.createElement("div");
+    sign_div.className = "choice";
+
+    let sign_img = document.createElement("img");
+    sign_img.src = source;
+    sign_img.alt = name;
+
+    let sign_title = document.createElement("h2");
+    sign_title.innerHTML = name;
+    sign_title.className = "choice--title";
+
+    sign_div.appendChild(sign_img);
+    sign.appendChild(sign_div);
+    sign.appendChild(sign_title);
+    choices_div.appendChild(sign);
+}
+
+function createArrayRandomNumber() {
+    let numReserve = []
+    while (numReserve.length < countOfElements) {
+        let randomNumber = Math.ceil(Math.random() * 800);
+        let found = false;
+        for (let i = 0; i < numReserve.length; i++) {
+            if (numReserve[i] === randomNumber){
+            found = true;
+            break;
+            }
+        }
+        if (!found) { numReserve[numReserve.length]=randomNumber; }
+    }
+    return numReserve;
+}
+
+function displayPageTitle() {
+    let headText = '';
+    for (let i = 0; i <sign.length; i++) {
+        headText += sign[i].name;
     };
+    headTop.textContent =headText;
+}
+
+function createArrayOfPokemons() {
+    let numReserve = createArrayRandomNumber();
+    getResponse(numReserve);
+    displayPageTitle();
+}
+
+const onStartGetResponse = () => {
+    headTop.innerText = `Загрузка ...`;
+}
+
+async function getResponse(numReserve) {
+    onStartGetResponse();
+    let headText = ` `;
+    for (let i = 0; i < numReserve.length; i++) {
+        const number = numReserve[i];
+        let adress = `https://pokeapi.co/api/v2/pokemon-form/${number}`;
+        await fetch(adress)
+            .then(response => response.json())
+            .then(data => {
+                headText += ` ${data.name}`;
+                createElementDiv(2, data.name,data.sprites["front_shiny"]);
+                sign[i].name = data.name;
+                sign[i].source = data.sprites["front_shiny"];
+            });
+    };
+    headTop.innerText = headText;
     main();
 }
 
-createElementsDiv();
+function startPlay() {
+    console.log(typeOfGame);
+    if(typeOfGame == 1){
+        popUp.classList.add('choice-type-game-hover');
+        createElementsDiv(typeOfGame);
+    }
+    else{
+        popUp.classList.add('choice-type-game-hover');
+        createArrayOfPokemons();
+    }
+}
+
+function setTypeOfGame(typeOfGameValue) {
+    // if (typeOfGame == 2) {
+    //     countOfElements = 5;
+    // }
+    typeOfGame = typeOfGameValue;
+}
+
+buttonStart.addEventListener('click', startPlay);

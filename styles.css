@@ -7,7 +7,72 @@
 
     body {
         background-color: #24272E;
+        position: relative;
     }
+
+        .choice-type-game {
+            position: absolute;
+            z-index: 9;
+            left: 22%;
+            top: 90px;
+            width: 60vw;
+            height: 500px;
+            background-color: rgb(102, 180, 144);
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            align-items: center;
+            color: #25272E;
+            font-family: Asap, sans-serif;
+        }
+
+        .choice-type-game-hover {
+            display: none;
+        }
+
+            .choice-text {
+                margin: 30px 0 20px;
+                font-size: 40px;
+                font-weight: bold;
+            }
+
+                .choice-type-input {
+                    margin-top: 30px;
+                    font-size: 30px;
+                }
+
+                    .choice-type-text {
+                        font-size: 30px;
+                    }
+            
+            .count-items {
+                display: flex;
+                flex-direction: column;
+                margin-top: 20px;
+                padding-left: 100px;
+                color: #25272E;
+                font-family: Asap, sans-serif;
+                font-size: 20px;
+            }
+
+            .count-items-hover {
+                display: none;
+            }
+
+                .count-item {
+                    margin-top: 15px;
+                    font-size: 20px;
+                }
+
+        .startPlay {
+            margin-top: 40px;
+            width: 300px;
+            height: 50px;
+            font-size: 40px;
+            font-weight: bold;
+            font-family: Asap, sans-serif;
+            border-radius: 30px;
+        }
 
         header {
             background: white;
@@ -65,22 +130,36 @@
             }
 
         .choices {
-            margin-top: 50px;
+            margin: 50px auto 0;
             text-align: center;
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            flex-wrap: wrap;
         }
+
+            .choice__wrapper {
+                margin: 0 20px 20px;
+            }
+
+            .choice__wrapper:last-child {
+                margin-bottom: 0;
+            }
 
             .choice {
                 border: 4px solid white;
                 border-radius: 50%;
-                margin: 0 20px;
-                padding: 10px;
                 display: inline-block;
                 transition: all 0.3s ease;
             }
 
             .choice:hover {
                 cursor: pointer;
-                background: #24272E;
+                background: #7a97db;
+            }
+
+            .choice--title {
+                color: white;
             }
 
                 #action-message {
@@ -99,12 +178,11 @@
             text-align: center;
             color: white;
             font-size: 14px;
-        }        
+        }
 
             .result-logs-item {
                 display: flex;
                 flex-direction: row;
-                /* margin-top: 10px; */
                 margin: 10px auto 0;
                 align-items: center;
             }
